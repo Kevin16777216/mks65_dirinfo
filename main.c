@@ -1,13 +1,46 @@
 #include <stdio.h>
+#include <dirent.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
+#include <string.h>
+
 int main(){
-  struct stat st;
-  stat("demo.txt",&st);
-  printf("size of demo.txt: %d Bytes\n",st.st_size);
-  printf("permissions of demo.txt: %d\n",st.st_mode);
-  printf("last accessed of demo.txt: %s\n",ctime(&(st.st_atime)));
-  printf("last modified of demo.txt: %s\n", ctime(&(st.st_mtime)));
+  char *r = ".";
+  printf("Statistics for Directory: %s\n",r);
+  char *RegFiles[500];
+  char *DirFiles[500];
+  struct stat temp;
+  int Reglen = 0;
+  int Dirlen = 0;
+  int size = 0;
+  DIR *d = opendir(r);
+  struct dirent *dir;
+  while(dir = readdir(d)){
+    stat(dir->d_name,&temp);
+    size += temp.st_size;
+    if(dir->d_type != 4){
+      RegFiles[Reglen] = strdup(dir->d_name);
+      Reglen++;
+      continue;
+    }
+    DirFiles[Dirlen] = strdup(dir->d_name);
+    Dirlen++;
+  }
+  printf("\nSize of %s: %d Bytes\n\n",r,size);
+  printf("Directories:\n\t");
+  int i = -1;
+  while(++i < Dirlen){
+    printf("%s\n\t",DirFiles[i]);
+    free(DirFiles[i]);
+  }
+  i = -1;
+  printf("\nRegular Files:\n\t");
+  while(++i < Reglen){
+    printf("%s\n\t",RegFiles[i]);
+    free(RegFiles[i]);
+  }
+  closedir(d);
   return 0;
 }
