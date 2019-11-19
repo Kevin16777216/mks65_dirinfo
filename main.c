@@ -5,18 +5,19 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <errno.h>
 
-int main(){
+int main(int argc, char * argv[]){
   char r[256];
   if (argc > 1){
       strcpy(r, argv[1]);
   }else{
       printf("Please enter a directory:");
       fgets(r, 200, stdin);
-      r[strlen(r)] = '\0';
-      printf("\n");
+      r[strlen(r)-1] = '\0';
   }
-  printf("Statistics for Directory: %s\n",r);
+  printf("\n",r);
+  printf("Statistics for Directory:%s\n",r);
   char *RegFiles[500];
   char *DirFiles[500];
   struct stat temp;
@@ -33,23 +34,21 @@ int main(){
     stat(dir->d_name,&temp);
     size += temp.st_size;
     if(dir->d_type != 4){
-      RegFiles[Reglen] = strdup(dir->d_name);
-      Reglen++;
+      RegFiles[Reglen++] = strdup(dir->d_name);
       continue;
     }
-    DirFiles[Dirlen] = strdup(dir->d_name);
-    Dirlen++;
+    DirFiles[Dirlen++] = strdup(dir->d_name);
   }
   printf("\nSize of %s: %d Bytes\n\n",r,size);
   printf("Directories:\n\t");
   int i = -1;
-  while(++i < Dirlen){
+  while(++i-Dirlen){
     printf("%s\n\t",DirFiles[i]);
     free(DirFiles[i]);
   }
   i = -1;
   printf("\nRegular Files:\n\t");
-  while(++i < Reglen){
+  while(++i-Reglen){
     printf("%s\n\t",RegFiles[i]);
     free(RegFiles[i]);
   }
