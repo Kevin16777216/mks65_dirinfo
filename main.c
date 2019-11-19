@@ -26,7 +26,7 @@ int main(int argc, char * argv[]){
   DIR *d = opendir(r);
   if (!d) {
     printf("error %d: %s\n",errno,strerror(errno));
-    return 0;
+    return -1;
   }
   struct dirent *dir;
   while(dir = readdir(d)){
