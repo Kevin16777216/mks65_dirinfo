@@ -7,7 +7,15 @@
 #include <string.h>
 
 int main(){
-  char *r = ".";
+  char r[256];
+  if (argc > 1){
+      strcpy(r, argv[1]);
+  }else{
+      printf("Please enter a directory:");
+      fgets(r, 200, stdin);
+      r[strlen(r)] = '\0';
+      printf("\n");
+  }
   printf("Statistics for Directory: %s\n",r);
   char *RegFiles[500];
   char *DirFiles[500];
@@ -16,6 +24,10 @@ int main(){
   int Dirlen = 0;
   int size = 0;
   DIR *d = opendir(r);
+  if (!d) {
+    printf("error %d: %s\n",errno,strerror(errno));
+    return 0;
+  }
   struct dirent *dir;
   while(dir = readdir(d)){
     stat(dir->d_name,&temp);
