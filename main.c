@@ -16,8 +16,7 @@ int main(int argc, char * argv[]){
       fgets(r, 200, stdin);
       r[strlen(r)-1] = '\0';
   }
-  printf("\n",r);
-  printf("Statistics for Directory:%s\n",r);
+  printf("\nStatistics for Directory:%s\n",r);
   char *RegFiles[500];
   char *DirFiles[500];
   struct stat temp;
